@@ -1,0 +1,30 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/todolist.css'%}">
+    <title>Главная страница портала Ученика</title>
+</head>
+<body>
+    Викторина
+    (кнопка выбора тематики викторины, начать, завершить)
+    <form action="/quiz/quiz_query">
+        <input type="text" name="quiz_query">
+        <button type="submit">jотправить</button>
+    </form>
+    {% if answer_text %}
+        <div>
+            <h2>Ваша Викторина:</h2>
+            <p>{{answer_text}}</p>
+        </div>
+    {% else %}
+    <div>
+        <h2>Напишите тему для вашей Викторины</h2>
+    
+    </div>
+    {% endif %}
+    <a href="/">На Главную</a>
+</body>
+</html>

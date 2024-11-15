@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/todolist.css'%}">
+    <title>Главная страница портала Ученика</title>
+</head>
+
+<body>
+    Список дел(кнопка добавить, редактировать, удалить)
+    {% for task in tasks %}
+    <div class="task_div" id="{{task.id}}">{{task.title}}</div>
+    {% endfor %}
+    <a href="/">На Главную</a>
+    <button id="add_task">тык</button>
+    <div class="add_task_form">
+        <h2>Добавление новой задачи</h2>
+        <button id="close_add_task">&#9587;</button>
+        <form action="/todolist/add_task_view" method="POST">
+            {% csrf_token %}
+            {{form_add}}
+            <button type="submit">добавить</button>
+        </form>
+    </div>
+    <div class="edit_task_form">
+        <h2>Редактирование задачи</h2>
+        <button id="close_edit_task">&#9587;</button>
+        <form action="/todolist/edit_task_view" method="POST">
+            {% csrf_token %}
+            {{form_edit}}
+            <button type="submit">изменить</button>
+        </form>
+    </div>
+</body>
+<script>
+    $('#add_task').on("click", function (event) {
+        console.log(event)
+
+        $('.add_task_form').addClass('active')
+    })
+
+    $('#close_add_task').on("click", function (event) {
+        $('.add_task_form').removeClass('active')
+    })
+
+    $('.task_div').on("click", function (event) {
+        console.log(event.currentTarget.id)
+        $('.edit_task_form').addClass('active');
+
+        $.ajax({
+            type: "GET",
+            url: "/get_task_info/2",
+            success: function (data) {
+                console.log(data)
+                $('input[name=title]').val(data['title'])
+                $('select[name=status]').val(data['status_id'])
+            }
+        })
+    })
+    $('#close_edit_task').on("click", function (event) {
+        $('.edit_task_form').removeClass('active')
+    })
+
+</script>
+
+
+</html>

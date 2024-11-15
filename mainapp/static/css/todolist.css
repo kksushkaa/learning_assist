@@ -1,0 +1,16 @@
+body{
+    background-color: rgb(126, 181, 226);
+}
+.add_task_form{
+    background-color: pink;
+    display:none;
+
+}
+.edit_task_form{
+    background-color: pink;
+    display:none;
+
+}
+.active{
+    display:block;
+}
