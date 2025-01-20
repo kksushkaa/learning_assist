@@ -1,30 +1,31 @@
-{% load static %} 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/todolist.css'%}">
-    <title>Главная страница портала Ученика</title>
-</head>
-<body>
-    Викторина
-    (кнопка выбора тематики викторины, начать, завершить)
-    <form action="/quiz/quiz_query">
-        <input type="text" name="quiz_query">
-        <button type="submit">jотправить</button>
-    </form>
-    {% if answer_text %}
-        <div>
-            <h2>Ваша Викторина:</h2>
-            <p>{{answer_text}}</p>
+{% extends "mainapp/base.html" %}
+
+{% block title %}
+Викторина
+{% endblock title %}
+
+{% block content %}
+<div class="container py-5">
+    {% if not answer_text %}
+    <div class="text-center mb-5">
+        <h1 class="text-primary">ВИКТОРИНА</h1>
+        <p class="lead">Актуализация знаний по любой теме</p>
+        <p>Введите необходимую вам тему, и Искусственный Интеллект составит наиболее подходящий тест!</p>
+    </div>
+    <form action="/quiz/quiz_query/" method="post" class="d-flex justify-content-center">
+        {% csrf_token %}
+        <div class="input-group w-50">
+            <input type="text" name="quiz_query" class="form-control" placeholder="Введите тему викторины" required>
+            <button type="submit" class="btn btn-success">Составить</button>
         </div>
+    </form>
     {% else %}
-    <div>
-        <h2>Напишите тему для вашей Викторины</h2>
-    
+    <div class="text-center">
+        <h1 class="text-primary mb-4">Ваша Викторина по теме: <span class="text-success">{{ answer_text }}</span></h1>
+        <a href="/quiz" class="btn btn-secondary">Начать сначала</a>
     </div>
     {% endif %}
-    <a href="/">На Главную</a>
-</body>
-</html>
+</div>
+{% endblock content %}
+
+

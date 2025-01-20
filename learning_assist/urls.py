@@ -23,9 +23,15 @@ from mainapp.views import (
     todolist,
     assist,
     quiz,
+    quiz_query_view,
     gpt_query_view,
     add_task_view,
+    edit_task_view,
     get_task_info,
+    logout_view,
+    reg_view, 
+    get_all_users_tasks,
+    check_answers
 )
 
 urlpatterns = [
@@ -33,9 +39,15 @@ urlpatterns = [
     path("", index),
     path("schedule", schedule_view),
     path("todolist", todolist),
-    path("assist/gpt_query", gpt_query_view),
+    path("assist/gpt_query/", gpt_query_view),
     path("assist", assist),
     path("quiz", quiz),
+    path("logout", logout_view),
+    path("register", reg_view),
+    path("quiz/quiz_query/", quiz_query_view),
     path("todolist/add_task_view", add_task_view),
-    path("get_task_info/<int:task_id>", get_task_info),  # get_task_info/1
+    path("todolist/edit_task_view", edit_task_view),
+    path("get_task_info/<int:task_id>", get_task_info), 
+    path("get_all_users_tasks", get_all_users_tasks),
+    path("quiz/check_answers", check_answers)
 ]

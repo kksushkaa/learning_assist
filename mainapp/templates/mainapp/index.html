@@ -1,17 +1,84 @@
-{% load static %} 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/index.css'%}">
-    <title>Главная страница портала Ученика</title>
-</head>
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block content %}
+
 <body>
-    Главная(вход.регистрация.просмотр аккаунта)
-    <a href="/schedule">Расписание</a>
-    <a href="/todolist">Список дел</a>
-    <a href="/assist">Личный помощник</a>
-    <a href="/quiz">Викторина</a>
+    <div class="bg-light py-4 shadow-sm">
+        <div class="container text-center">
+            <h1 class="display-5 fw-bold text-primary">СУПЕРПЛАНЕР. ПОМОЩНИК ПО УЧЕБЕ</h1>
+        </div>
+    </div>
+
+    {% if request.user.id %}
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary">Главная</h1>
+
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Расписание</h5>
+                        <a href="/schedule" class="btn btn-primary w-100">Перейти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Список дел</h5>
+                        <a href="/todolist" class="btn btn-success w-100">Перейти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Личный помощник</h5>
+                        <a href="/assist" class="btn btn-info w-100">Перейти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Викторина</h5>
+                        <a href="/quiz" class="btn btn-warning w-100">Перейти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Введите данные для входа</h3>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Имя пользователя</label>
+                                {{ login_form.username }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                {{ login_form.password }}
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Войти</button>
+                        </form>
+                        <div class="text-center mt-4">
+                            <h5 class="mb-3">Если у вас еще нет аккаунта</h5>
+                            <a href="/register" class="btn btn-secondary">Регистрация</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </body>
-</html>
+{% endblock content %}

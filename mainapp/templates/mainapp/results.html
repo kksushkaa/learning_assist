@@ -1,0 +1,31 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<body>
+        <div class="results">
+            <h1>У вас {{c}} из 7 правильных ответов</h1>
+        </div>
+        {% for n, question, user_answer in test %}
+        <div>
+            <h2>{{question.question}}</h2>
+            <ul>
+                
+                {% if question.answer == user_answer %}
+                    <li style="color:#00FF00">{{question.answer}}</li>
+                {% else %}
+                    <li style="color:#FF0000">{{user_answer}}</li>
+                    <li style="color:#00FF00">{{question.answer}}</li>
+                {% endif %}
+                
+            </ul>
+        </div>
+        
+        
+        {% endfor %}
+        
+    </form>
+
+</body>
+{% endblock content %}

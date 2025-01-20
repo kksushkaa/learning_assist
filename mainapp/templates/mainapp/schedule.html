@@ -1,14 +1,60 @@
-{% load static %} 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/todolist.css'%}">
-    <title>Главная страница портала Ученика</title>
-</head>
-<body>
-    Расписание
-    <a href="/">На Главную</a>
-</body>
-</html>
+{% extends 'mainapp/base.html' %}
+
+{%block title%}Расписание{% endblock%}
+{% block extraimport %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            themeSystem: 'bootstrap5', // Использование Bootstrap 5 для современного стиля
+            locale: 'ru', 
+            initialView: 'timeGridWeek', 
+            nowIndicator: true, // Текущая временная метка
+            height: 'auto', // Автоматическая высота
+            contentHeight: 'auto',
+            aspectRatio: 1.5, // Соотношение сторон для лучшего вида
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: 'Сегодня',
+                month: 'Месяц',
+                week: 'Неделя',
+                day: 'День'
+            },
+            views: {
+                timeGridWeek: {
+                    slotDuration: '01:00:00', // Интервал отображения
+                    
+                }
+            },
+            events: {
+                url: '/get_all_users_tasks',
+                method: 'GET',
+                failure: function() {
+                    alert('Ошибка при загрузке задач');
+                }
+            },
+            eventColor: '#007bff', // Основной цвет событий
+            eventBorderColor: 'transparent', // Убрать рамку
+            eventTextColor: '#fff', // Цвет текста событий
+            selectable: true, // Возможность выбора времени
+            selectHelper: true,
+            dayMaxEvents: true, // "Ещё N событий" при превышении лимита
+        });
+        calendar.render();
+      });
+
+    </script>
+{% endblock extraimport %}
+{% block content %}
+<div id='calendar'></div>   
+    
+{%endblock%}
+
+{% block scripts %}
+{% endblock scripts %}

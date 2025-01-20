@@ -1,30 +1,69 @@
-{% load static %} 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/assist.css'%}">
-    <title>Главная страница портала Ученика</title>
-</head>
-<body>
-    Личный ассистент
-    ( поле ввода запроса ассистенту, кнопка отправки запроса, поле для ответа, история запросов)
-    <form action="/assist/gpt_query">
-        <input type="text" name="gpt_query">
-        <button type="submit">спросить</button>
-    </form>
-    {% if answer_text %}
-        <div>
-            <h2>Ваш ответ:</h2>
-            <p>{{answer_text}}</p>
-        </div>
-    {% else %}
-    <div>
-        <h2>Напишите ваш запрос в поле выше</h2>
-    
+{% extends "mainapp/base.html" %}
+
+{% block title %}
+Личный помощник ученика
+{% endblock title %}
+
+{% block content %}
+
+<div class="container py-5">
+    <h1 class="text-center text-primary mb-4">Личный ассистент</h1>
+    <div class="card shadow-sm p-4 mb-4">
+        <form action="" method="get" id="gpt_request">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="gpt_query" class="form-label">Введите ваш запрос:</label>
+                <input type="text" id="gpt_query" name="gpt_query" class="form-control"
+                    placeholder="Например, 'помоги с задачей по математике'">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="askButton">Спросить</button>
+        </form>
     </div>
-    {% endif %}
-    <a href="/">На Главную</a>
-</body>
-</html>
+
+    <div class="alert alert-success mt-4" role="alert" id="answer">
+        
+    </div>
+
+
+    <div class="mt-4 text-center">
+        <!-- <a href="/" class="btn btn-secondary">На Главную</a> -->
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock content %}
+{% block scripts %}
+<script>
+    $("#gpt_request").on('submit', function (event) {
+        event.preventDefault()
+        $('#answer').html('<h1>Загрузка</h1>');
+        $('#askButton').prop('disabled', true)
+        $.ajax({
+            method: "POST", 
+            url: "/assist/gpt_query/", 
+            data: { 
+                gpt_query: $('#gpt_query').val(), 
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val() 
+            },
+            success: function(data){
+                function escapeLatex(markdownText) {
+                    return markdownText.replace(/\\\[/g, '\\\\[')
+                                    .replace(/\\\]/g, '\\\\]')
+                                    .replace(/\\\(/g, '\\\\(')
+                                    .replace(/\\\)/g, '\\\\)');
+                }
+
+                const escapedMarkdown = escapeLatex(data.message);
+                const htmlContent = marked.parse(escapedMarkdown);
+                $('#answer').html(`<h2 class="h5">Ваш ответ:</h2><p>${htmlContent}</p>`)
+                console.log(marked.parse(data.message))
+
+                MathJax.typesetPromise()
+                $('#askButton').prop('disabled', false)
+            }
+        })
+    })
+    
+</script>
+{% endblock scripts %}

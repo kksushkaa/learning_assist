@@ -1,0 +1,26 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<body>
+    {{zag}}
+    {{test}}
+    <form action="/quiz/check_answers" method="post">
+        {% csrf_token %}
+        {% for n, question in test %}
+        <div>
+            <h2>{{question.question}}</h2>
+        </div>
+        {% for answer in question.options %}
+        <div>
+            <input type="radio" name='q{{n}}' value='{{answer}}''>
+            <label for="">{{answer}}</label>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        <button type='submit'>Отправить на проверку</button>
+    </form>
+
+</body>
+{% endblock content %}
