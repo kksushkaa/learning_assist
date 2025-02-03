@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect, redirect
 from django.http import JsonResponse
 from mainapp.models import Task
 from mainapp.forms import TaskAddForm, TaskEditForm, UserLoginForm, UserRegForm
@@ -46,7 +46,8 @@ def reg_view(request):
 
 
 def schedule_view(request):
-    return render(request, "mainapp/schedule.html")
+    context = {"form_add": TaskAddForm(), "form_edit": TaskEditForm()}
+    return render(request, "mainapp/schedule.html", context)
 
 
 def todolist(request):
@@ -128,7 +129,7 @@ def add_task_view(request):
         task.user = request.user
         task.status_id = 2
         task.save()
-        return HttpResponseRedirect("/todolist")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def edit_task_view(request):
     edit_form = TaskEditForm(request.POST)

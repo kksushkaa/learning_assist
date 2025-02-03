@@ -2,30 +2,37 @@
 {% load static %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Ваш результат: {{ c }} из 7 правильных ответов</h1>
+    </div>
 
-<body>
-        <div class="results">
-            <h1>У вас {{c}} из 7 правильных ответов</h1>
+    {% for n, question, user_answer in test %}
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h2 class="h5">{{ question.question }}</h2>
         </div>
-        {% for n, question, user_answer in test %}
-        <div>
-            <h2>{{question.question}}</h2>
-            <ul>
-                
+        <div class="card-body">
+            <ul class="list-group">
                 {% if question.answer == user_answer %}
-                    <li style="color:#00FF00">{{question.answer}}</li>
+                    <li class="list-group-item text-success"><strong>Ваш ответ: {{ question.answer }} (Верно)</strong></li>
                 {% else %}
-                    <li style="color:#FF0000">{{user_answer}}</li>
-                    <li style="color:#00FF00">{{question.answer}}</li>
+                    {% if not user_answer %}
+                        <li class="list-group-item text-danger"><strong>Нет ответа</strong></li>
+                    {% else %}
+                        <li class="list-group-item text-danger"><strong>Ваш ответ: {{ user_answer }} (Неверно)</strong></li>
+                    {% endif %}
+                    <li class="list-group-item text-success"><strong>Правильный ответ: {{ question.answer }}</strong></li>
                 {% endif %}
-                
             </ul>
         </div>
-        
-        
-        {% endfor %}
-        
-    </form>
+    </div>
+    {% endfor %}
 
-</body>
+    <div class="text-center mt-4">
+        <a class="btn btn-primary btn-lg" href="/quiz">
+            Решить новую викторину
+        </a>
+    </div>
+</div>
 {% endblock content %}
