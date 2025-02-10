@@ -1,11 +1,15 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect, redirect
-from django.http import JsonResponse
-from mainapp.models import Task
-from mainapp.forms import TaskAddForm, TaskEditForm, UserLoginForm, UserRegForm
-from django.contrib.auth import authenticate, login, logout
-import os
-from openai import OpenAI
 import json
+import os
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import HttpResponseRedirect, redirect, render
+from openai import OpenAI
+
+from mainapp.forms import TaskAddForm, TaskEditForm, UserLoginForm, UserRegForm
+from mainapp.models import Task
+
 
 def index(request):
     if request.method == "GET":
@@ -45,26 +49,31 @@ def reg_view(request):
         return render(request, "mainapp/reg.html", context)
 
 
+@login_required
 def schedule_view(request):
     context = {"form_add": TaskAddForm(), "form_edit": TaskEditForm()}
     return render(request, "mainapp/schedule.html", context)
 
 
+@login_required
 def todolist(request):
-    tasks = Task.objects.filter(user=request.user).order_by('-status_id')
+    tasks = Task.objects.filter(user=request.user).order_by("-status_id")
     # tasks = Task.objects.filter(status_id=2)
     context = {"tasks": tasks, "form_add": TaskAddForm(), "form_edit": TaskEditForm()}
     return render(request, "mainapp/todolist.html", context)
 
 
+@login_required
 def assist(request):
     return render(request, "mainapp/assist.html")
 
 
+@login_required
 def quiz(request):
     return render(request, "mainapp/quiz.html")
 
 
+@login_required
 def gpt_query_view(request):
     query_text = request.POST.get("gpt_query")
     print(f"Я спрашиваю у gpt {query_text}")
@@ -81,13 +90,14 @@ def gpt_query_view(request):
     )
 
     a = completion.choices[0].message.content
-    
+
     print(a)
     return JsonResponse({"message": a})
 
 
+@login_required
 def quiz_query_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         query_text = request.POST.get("quiz_query")
         print(f"Викторина {query_text}")
         client = OpenAI(api_key=os.getenv("GPT_TOKEN"))
@@ -110,17 +120,18 @@ def quiz_query_view(request):
             test_st = a
         test_dic = json.loads(test_st)
         print(test_dic)
-        num_lst = list(enumerate(test_dic['test']))
-        context = {'zag': query_text, 'test': num_lst}
-        request.session['test'] = num_lst
-        request.session['zag'] = query_text
-        return HttpResponseRedirect('/quiz/quiz_query')
+        num_lst = list(enumerate(test_dic["test"]))
+        context = {"zag": query_text, "test": num_lst}
+        request.session["test"] = num_lst
+        request.session["zag"] = query_text
+        return HttpResponseRedirect("/quiz/quiz_query")
     else:
         print(request.GET)
-        context = {'zag': request.session['zag'], 'test': request.session['test']}
-        return render(request, 'mainapp/quiz_task.html', context)
+        context = {"zag": request.session["zag"], "test": request.session["test"]}
+        return render(request, "mainapp/quiz_task.html", context)
 
 
+@login_required
 def add_task_view(request):
     print(request.POST)
     add_form = TaskAddForm(request.POST)
@@ -129,8 +140,10 @@ def add_task_view(request):
         task.user = request.user
         task.status_id = 2
         task.save()
-        return redirect(request.META.get('HTTP_REFERER', '/'))
+        return redirect(request.META.get("HTTP_REFERER", "/"))
 
+
+@login_required
 def edit_task_view(request):
     edit_form = TaskEditForm(request.POST)
     if edit_form.is_valid():
@@ -141,6 +154,7 @@ def edit_task_view(request):
         return HttpResponseRedirect("/todolist")
 
 
+@login_required
 def get_task_info(request, task_id):
     task = Task.objects.get(id=task_id)
     task_dic = {
@@ -151,7 +165,7 @@ def get_task_info(request, task_id):
         "user_id": task.user.id,
         "start_time": task.start_time,
         "end_time": task.end_time,
-        "duration": f"{int(task.duration.total_seconds() // 3600)}:{int(task.duration.total_seconds()%3600//60)}",
+        "duration": f"{int(task.duration.total_seconds() // 3600)}:{int(task.duration.total_seconds() % 3600 // 60)}",
     }
     return JsonResponse(task_dic)
 
@@ -161,11 +175,7 @@ def logout_view(request):
     return HttpResponseRedirect("/")
 
 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect("/")
-
-
+@login_required
 def get_all_users_tasks(request):
     user_tasks = Task.objects.filter(user=request.user)
     all_tasks = []
@@ -184,14 +194,16 @@ def get_all_users_tasks(request):
         print(tasks.duration.seconds)
     return JsonResponse(all_tasks, safe=False)
 
+
+@login_required
 def check_answers(request):
     c = 0
-    
+
     for i in range(7):
-        user_ans = request.POST.get(f'q{i}')
-        corr_ans = request.session['test'][i][1]['answer']
-        request.session['test'][i].append(user_ans)
+        user_ans = request.POST.get(f"q{i}")
+        corr_ans = request.session["test"][i][1]["answer"]
+        request.session["test"][i].append(user_ans)
         if user_ans == corr_ans:
             c += 1
-    context = {'c': c,  'test': request.session['test']}       
-    return render(request, 'mainapp/results.html', context)
+    context = {"c": c, "test": request.session["test"]}
+    return render(request, "mainapp/results.html", context)

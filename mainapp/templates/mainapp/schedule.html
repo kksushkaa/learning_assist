@@ -1,169 +1,178 @@
-{% extends 'mainapp/base.html' %}
-
-{%block title%}Расписание{% endblock%}
+{% extends 'mainapp/base.html' %} 
+{%block title%}Расписание{% endblock%} 
 {% block extraimport %}
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            themeSystem: 'bootstrap5', // Использование Bootstrap 5 для современного стиля
-            locale: 'ru',
-            initialView: 'timeGridWeek',
-            nowIndicator: true, // Текущая временная метка
-            height: 'auto', // Автоматическая высота
-            contentHeight: 'auto',
-            aspectRatio: 1.5, // Соотношение сторон для лучшего вида
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            buttonText: {
-                today: 'Сегодня',
-                month: 'Месяц',
-                week: 'Неделя',
-                day: 'День'
-            },
-            views: {
-                timeGridWeek: {
-                    slotDuration: '01:00:00', // Интервал отображения
-
-                }
-            },
-            events: {
-                url: '/get_all_users_tasks',
-                method: 'GET',
-                failure: function () {
-                    alert('Ошибка при загрузке задач');
-                }
-            },
-            eventColor: '#007bff', // Основной цвет событий
-            eventBorderColor: 'transparent', // Убрать рамку
-            eventTextColor: '#fff', // Цвет текста событий
-            selectable: true, // Возможность выбора времени
-            selectHelper: true,
-            dayMaxEvents: true, // "Ещё N событий" при превышении лимита
-            select: function (info) {
-                let modal = new bootstrap.Modal(document.getElementById("addTaskModal"))
-                modal.show()
-            }
-        });
-        calendar.render();
+  document.addEventListener("DOMContentLoaded", function () {
+    var calendarEl = document.getElementById("calendar");
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      themeSystem: "bootstrap5", 
+      locale: "ru",
+      initialView: "timeGridWeek",
+      nowIndicator: true, 
+      height: "auto",
+      contentHeight: "auto",
+      aspectRatio: 1.5, 
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay",
+      },
+      buttonText: {
+        today: "Сегодня",
+        month: "Месяц",
+        week: "Неделя",
+        day: "День",
+      },
+      views: {
+        timeGridWeek: {
+          slotDuration: "01:00:00", // Интервал отображения
+        },
+      },
+      events: {
+        url: "/get_all_users_tasks",
+        method: "GET",
+        failure: function () {
+          alert("Ошибка при загрузке задач");
+        },
+      },
+      eventColor: "#007bff", // Основной цвет событий
+      eventBorderColor: "transparent", // Убрать рамку
+      eventTextColor: "#fff", // Цвет текста событий
+      selectable: true, // Возможность выбора времени
+      selectHelper: true,
+      dayMaxEvents: true, // "Ещё N событий" при превышении лимита
+      select: function (info) {
+        let modal = new bootstrap.Modal(
+          document.getElementById("addTaskModal")
+        );
+        modal.show();
+      },
     });
-
+    calendar.render();
+  });
 </script>
-{% endblock extraimport %}
+{% endblock extraimport %} 
 {% block content %}
 <style>
-    #calendar {
-        max-width: 95vw;
-        margin: 0 auto;
-        background: #fff;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-    }
+  #calendar {
+    max-width: 95vw;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
 
-    /* Стили заголовка */
-    .fc-toolbar {
-        max-height: 60px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 7px 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
+  /* Стили заголовка */
+  .fc-toolbar {
+    max-height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 7px 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
 
-    .fc-toolbar h2 {
-        font-size: 24px;
-        font-weight: 600;
-        color: #333;
-    }
+  .fc-toolbar h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
 
-    /* Кнопки управления */
-    .fc-button {
-        border-radius: 8px !important;
-        padding: 8px 15px !important;
-        font-weight: 600;
-        background: #007bff !important;
-        border: none !important;
-        color: #fff !important;
-        transition: all 0.3s ease-in-out;
-    }
+  /* Кнопки управления */
+  .fc-button {
+    border-radius: 8px !important;
+    padding: 8px 15px !important;
+    font-weight: 600;
+    background: #007bff !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease-in-out;
+  }
 
-    .fc-button:hover {
-        background: #0056b3 !important;
-    }
+  .fc-button:hover {
+    background: #0056b3 !important;
+  }
 
-    /* Стили событий */
-    .fc-event {
-        border-radius: 8px;
-        padding: 5px 10px;
-        height: 50px;
-        font-size: 14px;
-        font-weight: 500;
-        background: linear-gradient(to right, #007bff, #00c6ff);
-        border: none;
-    }
+  /* Стили событий */
+  .fc-event {
+    border-radius: 8px;
+    padding: 5px 10px;
+    height: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+  }
 
-    /* Убранные границы и подложка */
-    .fc-daygrid-day,
-    .fc-timegrid-slot {
-        border: none !important;
-        background: #f9f9f9;
-    }
+  /* Убранные границы и подложка */
+  .fc-daygrid-day,
+  .fc-timegrid-slot {
+    border: none !important;
+    background: #f9f9f9;
+  }
 
-    .fc-day-today {
-        background: rgba(0, 123, 255, 0.1) !important;
-        border-radius: 5px;
-    }
+  .fc-day-today {
+    background: rgba(0, 123, 255, 0.1) !important;
+    border-radius: 5px;
+  }
 
-    /* Стили для названия дня */
-    .fc-col-header-cell {
-        background: #007bff;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        text-transform: uppercase;
-        padding: 15px 0;
-    }
+  /* Стили для названия дня */
+  .fc-col-header-cell {
+    background: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 15px 0;
+  }
 
-    .fc-col-header-cell a {
-        color: white;
-    }
+  .fc-col-header-cell a {
+    color: white;
+  }
 
-    /* Hover эффект для ячеек */
-    .fc-daygrid-day:hover {
-        background: rgba(0, 123, 255, 0.05);
-    }
+  /* Hover эффект для ячеек */
+  .fc-daygrid-day:hover {
+    background: rgba(0, 123, 255, 0.05);
+  }
 
-    .fc-day-today a {
-        color: #007bff
-    }
+  .fc-day-today a {
+    color: #007bff;
+  }
 </style>
-<div id='calendar'></div>
-<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTaskModalLabel">Добавление новой задачи</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="/todolist/add_task_view" method="POST">
-                    {% csrf_token %}
-                    {{ form_add.as_p }}
-                    <button type="submit" class="btn btn-success w-100">Добавить</button>
-                </form>
-            </div>
-        </div>
+<div id="calendar"></div>
+<div
+  class="modal fade"
+  id="addTaskModal"
+  tabindex="-1"
+  aria-labelledby="addTaskModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTaskModalLabel">
+          Добавление новой задачи
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form action="/todolist/add_task_view" method="POST">
+          {% csrf_token %} {{ form_add.as_p }}
+          <button type="submit" class="btn btn-success w-100">Добавить</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-{%endblock%}
-
-{% block scripts %}
+{%endblock%} 
+{% block scripts %} 
 {% endblock scripts %}

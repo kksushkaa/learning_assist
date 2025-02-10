@@ -1,29 +1,37 @@
 {% extends 'mainapp/base.html' %}
-
-{% block content %}
+ {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Тестирование</h1>
+  <h1 class="text-center mb-4">Тестирование</h1>
 
-    <form action="/quiz/check_answers" method="post">
-        {% csrf_token %}
-        {% for n, question in test %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h2 class="h5">{{ question.question }}</h2>
-            </div>
-            <div class="card-body">
-                {% for answer in question.options %}
-                <div class="form-check">
-                    <input type="radio" class="form-check-input" name="q{{ n }}" id="q{{ n }}_{{ loop.index }}" value="{{ answer }}">
-                    <label class="form-check-label" for="q{{ n }}_{{ loop.index }}">{{ answer }}</label>
-                </div>
-                {% endfor %}
-            </div>
+  <form action="/quiz/check_answers" method="post">
+    {% csrf_token %} {% for n, question in test %}
+    <div class="card mb-4">
+      <div class="card-header">
+        <h2 class="h5">{{ question.question }}</h2>
+      </div>
+      <div class="card-body">
+        {% for answer in question.options %}
+        <div class="form-check">
+          <input
+            type="radio"
+            class="form-check-input"
+            name="q{{ n }}"
+            id="q{{ n }}_{{ loop.index }}"
+            value="{{ answer }}"
+          />
+          <label class="form-check-label" for="q{{ n }}_{{ loop.index }}"
+            >{{ answer }}</label
+          >
         </div>
         {% endfor %}
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary">Отправить на проверку</button>
-        </div>
-    </form>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary">
+        Отправить на проверку
+      </button>
+    </div>
+  </form>
 </div>
 {% endblock content %}

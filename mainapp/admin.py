@@ -6,4 +6,3 @@ from mainapp.models import Status, Task, MyUser
 admin.site.register(Status)
 admin.site.register(Task)
 admin.site.register(MyUser)
-

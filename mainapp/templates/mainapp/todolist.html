@@ -1,84 +1,126 @@
-{% extends 'mainapp/base.html' %}
-
-{% block title %}Список задач{% endblock %}
-
+{% extends 'mainapp/base.html' %} 
+{% block title %}Список задач{% endblock %} 
 {% block content %}
 <div class="container py-5">
-    <h2 class="text-center text-primary mb-4">Ваши задачи:</h2>
-    <div class="list-group mb-4">
-        {% for task in tasks %}
-        <div class="task_div list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="{{task.id}}">
-            {{ task.title }}
-            <span class="badge bg-secondary">{{ task.status }}</span>
-        </div>
-        {% endfor %}
+  <h2 class="text-center text-primary mb-4">Ваши задачи:</h2>
+  <div class="list-group mb-4">
+    {% for task in tasks %}
+    <div
+      class="task_div list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+      id="{{task.id}}"
+    >
+      {{ task.title }}
+      <span class="badge bg-secondary">{{ task.status }}</span>
     </div>
+    {% endfor %}
+  </div>
 
-    <button id="add_task" class="btn btn-primary w-100 mb-3" data-bs-toggle="modal" data-bs-target="#addTaskModal">Новая задача</button>
+  <button
+    id="add_task"
+    class="btn btn-primary w-100 mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#addTaskModal"
+  >
+    Новая задача
+  </button>
 
-    <!-- Modal: Add Task -->
-    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addTaskModalLabel">Добавление новой задачи</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/todolist/add_task_view" method="POST">
-                        {% csrf_token %}
-                        {{ form_add.as_p }}
-                        <button type="submit" class="btn btn-success w-100">Добавить</button>
-                    </form>
-                </div>
-            </div>
+  <!-- Modal: Add Task -->
+  <div
+    class="modal fade"
+    id="addTaskModal"
+    tabindex="-1"
+    aria-labelledby="addTaskModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskModalLabel">
+            Добавление новой задачи
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
-    </div>
-
-    <!-- Modal: Edit Task -->
-    <div class="modal fade" id="edit_task_form" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editTaskModalLabel">Редактирование задачи</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/todolist/edit_task_view" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="task_id" id="task_id">
-                        {{ form_edit.as_p }}
-                        <button type="submit" class="btn btn-warning w-100">Изменить</button>
-                    </form>
-                </div>
-            </div>
+        <div class="modal-body">
+          <form action="/todolist/add_task_view" method="POST">
+            {% csrf_token %} {{ form_add.as_p }}
+            <button type="submit" class="btn btn-success w-100">
+              Добавить
+            </button>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Modal: Edit Task -->
+  <div
+    class="modal fade"
+    id="edit_task_form"
+    tabindex="-1"
+    aria-labelledby="editTaskModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">
+            Редактирование задачи
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form action="/todolist/edit_task_view" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" id="task_id" />
+            {{ form_edit.as_p }}
+            <button type="submit" class="btn btn-warning w-100">
+              Изменить
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-{% endblock %}
-
+{% endblock %} 
 {% block scripts %}
 <script>
-    document.querySelectorAll('.task_div').forEach(function (element) {
-        element.addEventListener('click', function (event) {
-            const taskId = event.currentTarget.id;
-            const modal = new bootstrap.Modal(document.getElementById('edit_task_form'));
-               console.log(1)
-            // Fetch task data
-            fetch(`/get_task_info/${taskId}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('task_id').value = data['id'];
-                    document.getElementById('title_edit_field').value = data['title'];
-                    document.getElementById('status_edit_field').value = data['status_id'];
-                    document.getElementById('description_edit_field').value = data['description'];
-                    
-                    document.getElementById('start_time_edit_field').value = data['start_time'];
-            
-                    document.getElementById('duration_good_edit_field').value = data['duration'];
-                    modal.show();
-                });
+  document.querySelectorAll(".task_div").forEach(function (element) {
+    element.addEventListener("click", function (event) {
+      const taskId = event.currentTarget.id;
+      const modal = new bootstrap.Modal(
+        document.getElementById("edit_task_form")
+      );
+      console.log(1);
+      // Fetch task data
+      fetch(`/get_task_info/${taskId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("task_id").value = data["id"];
+          document.getElementById("title_edit_field").value = data["title"];
+          document.getElementById("status_edit_field").value =
+            data["status_id"];
+          document.getElementById("description_edit_field").value =
+            data["description"];
+
+          document.getElementById("start_time_edit_field").value =
+            data["start_time"];
+
+          document.getElementById("duration_good_edit_field").value =
+            data["duration"];
+          modal.show();
         });
     });
+  });
 </script>
 {% endblock scripts %}
