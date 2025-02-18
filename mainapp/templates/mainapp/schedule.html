@@ -26,7 +26,7 @@
       },
       views: {
         timeGridWeek: {
-          slotDuration: "01:00:00", // Интервал отображения
+          slotDuration: "01:00:00", 
         },
       },
       events: {
@@ -36,12 +36,12 @@
           alert("Ошибка при загрузке задач");
         },
       },
-      eventColor: "#007bff", // Основной цвет событий
-      eventBorderColor: "transparent", // Убрать рамку
-      eventTextColor: "#fff", // Цвет текста событий
-      selectable: true, // Возможность выбора времени
+      eventColor: "#007bff",
+      eventBorderColor: "transparent", 
+      eventTextColor: "#fff", 
+      selectable: true, 
       selectHelper: true,
-      dayMaxEvents: true, // "Ещё N событий" при превышении лимита
+      dayMaxEvents: true, 
       select: function (info) {
         let modal = new bootstrap.Modal(
           document.getElementById("addTaskModal")
@@ -64,7 +64,6 @@
     padding: 20px;
   }
 
-  /* Стили заголовка */
   .fc-toolbar {
     max-height: 60px;
     display: flex;
@@ -82,7 +81,7 @@
     color: #333;
   }
 
-  /* Кнопки управления */
+
   .fc-button {
     border-radius: 8px !important;
     padding: 8px 15px !important;
@@ -97,7 +96,6 @@
     background: #0056b3 !important;
   }
 
-  /* Стили событий */
   .fc-event {
     border-radius: 8px;
     padding: 5px 10px;
@@ -108,7 +106,7 @@
     border: none;
   }
 
-  /* Убранные границы и подложка */
+
   .fc-daygrid-day,
   .fc-timegrid-slot {
     border: none !important;
@@ -120,7 +118,6 @@
     border-radius: 5px;
   }
 
-  /* Стили для названия дня */
   .fc-col-header-cell {
     background: #007bff;
     color: white;
@@ -134,7 +131,6 @@
     color: white;
   }
 
-  /* Hover эффект для ячеек */
   .fc-daygrid-day:hover {
     background: rgba(0, 123, 255, 0.05);
   }

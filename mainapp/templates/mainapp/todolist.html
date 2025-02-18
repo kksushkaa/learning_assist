@@ -24,7 +24,7 @@
     Новая задача
   </button>
 
-  <!-- Modal: Add Task -->
+
   <div
     class="modal fade"
     id="addTaskModal"
@@ -57,7 +57,6 @@
     </div>
   </div>
 
-  <!-- Modal: Edit Task -->
   <div
     class="modal fade"
     id="edit_task_form"
@@ -102,7 +101,6 @@
         document.getElementById("edit_task_form")
       );
       console.log(1);
-      // Fetch task data
       fetch(`/get_task_info/${taskId}`)
         .then((response) => response.json())
         .then((data) => {
