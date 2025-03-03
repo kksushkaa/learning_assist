@@ -1,4 +1,9 @@
 {% extends 'mainapp/base.html' %} 
+
+{% block title %}
+Регистрация
+{% endblock title%}
+
 {% block content %}
 
 <body>
@@ -17,24 +22,64 @@
                   >Имя пользователя</label
                 >
                 {{ reg_form.username }}
+                {% if reg_form.username.errors %}
+                    <div class="text-danger">
+                        {% for err in reg_form.username.errors %}
+                        {{err}}
+                        {% endfor %}
+                    </div>
+                
+                {% endif %}
               </div>
               <div class="mb-3">
                 <label for="first_name" class="form-label">Реальное имя</label>
                 {{ reg_form.first_name }}
+                {% if reg_form.first_name.errors %}
+                <div class="text-danger">
+                    {% for err in reg_form.first_name.errors %}
+                    {{err}}
+                    {% endfor %}
+                </div>
+            
+            {% endif %}
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Почта</label>
                 {{ reg_form.email }}
+                {% if reg_form.email.errors %}
+                <div class="text-danger">
+                    {% for err in reg_form.email.errors %}
+                    {{err}}
+                    {% endfor %}
+                </div>
+            
+            {% endif %}
               </div>
               <div class="mb-3">
                 <label for="password1" class="form-label">Пароль</label>
                 {{ reg_form.password1 }}
+                {% if reg_form.password1.errors %}
+                <div class="text-danger">
+                    {% for err in reg_form.password1.errors %}
+                    {{err}}
+                    {% endfor %}
+                </div>
+            
+            {% endif %}
               </div>
               <div class="mb-3">
                 <label for="password2" class="form-label"
                   >Подтвердите пароль</label
                 >
                 {{ reg_form.password2 }}
+                {% if reg_form.password2.errors %}
+                <div class="text-danger">
+                    {% for err in reg_form.password2.errors %}
+                    {{err}}
+                    {% endfor %}
+                </div>
+            
+            {% endif %}
               </div>
               <button type="submit" class="btn btn-success w-100">
                 Зарегистрироваться

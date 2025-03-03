@@ -1,5 +1,8 @@
 {% extends 'mainapp/base.html' %}
 
+{% block title %}
+Суперпланер
+{% endblock title%}
 
 {% block content %}
 
@@ -58,6 +61,14 @@
                 <div class="card shadow-lg">
                     <div class="card-body">
                         <h3 class="card-title text-center mb-4">Введите данные для входа</h3>
+                        {% if login_form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for err in login_form.non_field_errors %}
+                                    {{err}}
+                                {% endfor %}
+                            </div>
+            
+                        {% endif %}
                         <form action="" method="post">
                             {% csrf_token %}
                             <div class="mb-3">
