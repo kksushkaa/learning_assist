@@ -106,6 +106,7 @@
       fetch(`/get_task_info/${taskId}`)
         .then((response) => response.json())
         .then((data) => {
+            console.log(data)
           document.getElementById("task_id").value = data["id"];
           document.getElementById("title_edit_field").value = data["title"];
           document.getElementById("status_edit_field").value =

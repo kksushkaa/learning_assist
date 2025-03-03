@@ -163,7 +163,7 @@ def get_task_info(request, task_id):
         "description": task.description,
         "status_id": task.status.id,
         "user_id": task.user.id,
-        "start_time": task.start_time,
+        "start_time": task.start_time.strftime('%Y-%m-%d %H:%M:%S'),
         "end_time": task.end_time,
         "duration": f"{int(task.duration.total_seconds() // 3600)}:{int(task.duration.total_seconds() % 3600 // 60)}",
     }
