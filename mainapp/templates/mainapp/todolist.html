@@ -1,4 +1,4 @@
-{% extends 'mainapp/base.html' %} 
+{% extends 'mainapp/base.html' %}
 {% block title %}Список задач{% endblock %} 
 {% block content %}
 <div class="container py-5">
@@ -23,7 +23,6 @@
   >
     Новая задача
   </button>
-
 
   <div
     class="modal fade"
@@ -82,9 +81,12 @@
             {% csrf_token %}
             <input type="hidden" name="task_id" id="task_id" />
             {{ form_edit.as_p }}
-            <button type="submit" class="btn btn-warning w-100">
-              Изменить
-            </button>
+            <div class="d-flex justify-content-between">
+              <button type="submit" class="btn btn-warning w-75">
+                Изменить
+              </button>
+              <a href="delete_task/" class="btn btn-danger" id="delete_task_link"><i class="bi bi-trash-fill"></i></a>
+            </div>
           </form>
         </div>
       </div>
@@ -116,6 +118,9 @@
 
           document.getElementById("duration_good_edit_field").value =
             data["duration"];
+
+          document.getElementById('delete_task_link').href = `/delete_task/${taskId}`
+          
           modal.show();
         });
     });

@@ -31,7 +31,8 @@ from mainapp.views import (
     logout_view,
     reg_view, 
     get_all_users_tasks,
-    check_answers
+    check_answers,
+    delete_task
 )
 
 urlpatterns = [
@@ -48,6 +49,7 @@ urlpatterns = [
     path("todolist/add_task_view", add_task_view),
     path("todolist/edit_task_view", edit_task_view),
     path("get_task_info/<int:task_id>", get_task_info), 
+    path("delete_task/<int:task_id>", delete_task), 
     path("get_all_users_tasks", get_all_users_tasks),
     path("quiz/check_answers", check_answers)
 ]

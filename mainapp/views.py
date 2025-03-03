@@ -169,6 +169,12 @@ def get_task_info(request, task_id):
     }
     return JsonResponse(task_dic)
 
+@login_required
+def delete_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    task.delete()
+    return HttpResponseRedirect('/todolist')
+
 
 def logout_view(request):
     logout(request)
