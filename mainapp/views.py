@@ -1,20 +1,24 @@
 import json
 import os
+import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import HttpResponseRedirect, redirect, render
 from openai import OpenAI
+from django.contrib import messages
 
 from mainapp.forms import TaskAddForm, TaskEditForm, UserLoginForm, UserRegForm
 from mainapp.models import Task
+from pytz import timezone
 
 
 def index(request):
     if request.method == "GET":
         login_form = UserLoginForm()
         context = {"login_form": login_form}
+        check_upcoming_tasks(request)
         return render(request, "mainapp/index.html", context)
     else:
         print("Вход")
@@ -52,6 +56,7 @@ def reg_view(request):
 @login_required
 def schedule_view(request):
     context = {"form_add": TaskAddForm(), "form_edit": TaskEditForm()}
+    check_upcoming_tasks(request)
     return render(request, "mainapp/schedule.html", context)
 
 
@@ -60,16 +65,33 @@ def todolist(request):
     tasks = Task.objects.filter(user=request.user).order_by("-status_id")
     # tasks = Task.objects.filter(status_id=2)
     context = {"tasks": tasks, "form_add": TaskAddForm(), "form_edit": TaskEditForm()}
+    check_upcoming_tasks(request)
     return render(request, "mainapp/todolist.html", context)
+    
+
+
+def check_upcoming_tasks(request):
+    now = datetime.datetime.now(tz=timezone('Europe/Moscow'))
+    time_30_min = now + datetime.timedelta(minutes=30)
+    ff = Task.objects.filter(start_time__gte=now, start_time__lte=time_30_min, user=request.user, status_id=2)
+    # print(ff)
+    for task in ff:
+        # print(now)
+        time_diff = task.start_time - now
+        min_diff = int(time_diff.total_seconds() // 60)
+        messages.info(request, message=f"Напоминаю! До вашей задачи {task.title} осталось {min_diff} минут.")
+
 
 
 @login_required
 def assist(request):
+    check_upcoming_tasks(request)
     return render(request, "mainapp/assist.html")
 
 
 @login_required
 def quiz(request):
+    check_upcoming_tasks(request)
     return render(request, "mainapp/quiz.html")
 
 
@@ -163,17 +185,21 @@ def get_task_info(request, task_id):
         "description": task.description,
         "status_id": task.status.id,
         "user_id": task.user.id,
-        "start_time": task.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+        "start_time": task.start_time.strftime("%Y-%m-%d %H:%M:%S"),
         "end_time": task.end_time,
         "duration": f"{int(task.duration.total_seconds() // 3600)}:{int(task.duration.total_seconds() % 3600 // 60)}",
     }
     return JsonResponse(task_dic)
 
+
 @login_required
 def delete_task(request, task_id):
     task = Task.objects.get(id=task_id)
+    task_title = task.title
     task.delete()
-    return HttpResponseRedirect('/todolist')
+
+    messages.warning(request, f"Задача {task_title} удалена!")
+    return HttpResponseRedirect("/todolist")
 
 
 def logout_view(request):
