@@ -98,7 +98,7 @@ class TaskAddForm(ModelForm):
         widget=forms.Textarea(attrs={"class": "form-control "}),
         required=False
     )
-    start_time = forms.CharField(
+    start_time = forms.DateTimeField(
         label="Начало",
         widget=forms.DateTimeInput(
             attrs={"class": "form-control ", "type": "datetime-local"}
