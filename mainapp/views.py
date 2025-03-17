@@ -71,6 +71,9 @@ def todolist(request):
 
 
 def check_upcoming_tasks(request):
+    if not request.user.is_authenticated:
+        return
+
     now = datetime.datetime.now(tz=timezone('Europe/Moscow'))
     time_30_min = now + datetime.timedelta(minutes=30)
     ff = Task.objects.filter(start_time__gte=now, start_time__lte=time_30_min, user=request.user, status_id=2)
